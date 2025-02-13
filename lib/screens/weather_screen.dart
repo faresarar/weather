@@ -23,6 +23,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
             padding: EdgeInsets.all(15),
             child: SingleChildScrollView(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
                     height: 40,
@@ -44,6 +45,44 @@ class _WeatherScreenState extends State<WeatherScreen> {
               ),
             ),
           ),
+          SizedBox(height: 15),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.location_on),
+              Text(
+                "Pune",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              SizedBox(height: 50),
+              Text(
+                "30.9°c",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 90,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Row(
+                children: [
+                  Text(
+                    'Haze',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Image.asset(
+                    'assets/icons/haze.png',
+                    height: 180,
+                  )
+                ],
+              )
+            ],
+          )
         ],
       ),
     );
