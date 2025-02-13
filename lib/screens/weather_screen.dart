@@ -80,6 +80,52 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     height: 180,
                   )
                 ],
+              ),
+              const SizedBox(
+                height: 25,
+              ),
+              Row(
+                children: [
+                  const Icon(
+                    Icons.arrow_upward,
+                  ),
+                  Text(
+                    '35°c',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                  const Icon(
+                    Icons.arrow_downward,
+                  ),
+                  Text(
+                    '25°c',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 25,
+              ),
+              Card(
+                elevation: 5,
+                child: Container(
+                  color: Colors.transparent,
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Text('Sunrise'),
+                          Text('Sunset'),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
               )
             ],
           )
