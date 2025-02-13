@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../widgets/weather_data_tile.dart';
+
 class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
 
@@ -115,15 +117,31 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 elevation: 5,
                 child: Container(
                   color: Colors.transparent,
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Text('Sunrise'),
-                          Text('Sunset'),
-                        ],
-                      )
-                    ],
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Column(
+                      spacing: 15,
+                      children: [
+                        WeatherDataTile(
+                          index1: 'Sunrise',
+                          index2: 'Sunset',
+                          value1: '6:15 AM',
+                          value2: '6:30 PM',
+                        ),
+                        WeatherDataTile(
+                          index1: 'Humidity',
+                          index2: 'Visiblity',
+                          value1: '4',
+                          value2: '1000',
+                        ),
+                        WeatherDataTile(
+                          index1: 'Precipitation',
+                          index2: 'Wind speed',
+                          value1: '6',
+                          value2: '45',
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               )
