@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
+import '../services/weather_services.dart';
 import '../widgets/weather_data_tile.dart';
 
 class WeatherScreen extends StatefulWidget {
@@ -10,6 +11,61 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
+  final TextEditingController searchController = TextEditingController();
+  String bgImg = 'assets/images/clear.jpg';
+  String iconImg = 'assets/images/clear.jpg';
+  String cityName = '';
+  String temperature = '';
+  String tempMax = '';
+  String tempMin = '';
+  String sunrise = '';
+  String sunset = '';
+  String main = '';
+  String pressure = '';
+  String humidity = '';
+  String visibility = '';
+  String windSpeed = '';
+  getData({required String cityName}) async {
+    final weatherService = WeatherService();
+    final weatherData = await weatherService.fetchWeather(cityName: cityName);
+    debugPrint(weatherData.toString());
+    setState(() {
+      cityName = weatherData['name'];
+      temperature = weatherData['main']['temp'].toStringAsFixed(1);
+      main = weatherData['weather'][0]['main'];
+      tempMax = weatherData['main']['temp_max'].toStringAsFixed(1);
+      tempMin = weatherData['main']['temp_min'].toStringAsFixed(1);
+      sunrise = DateFormat('hh:mm a').format(
+          DateTime.fromMillisecondsSinceEpoch(
+              weatherData['sys']['sunrise'] * 1000));
+      sunset = DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(
+          weatherData['sys']['sunset'] * 1000));
+      pressure = weatherData['main']['pressure'].toString();
+      humidity = weatherData['main']['humidity'].toString();
+      visibility = weatherData['visibility'].toString();
+      windSpeed = weatherData['wind']['speed'].toString();
+      if (main == 'Clear') {
+        bgImg = 'assets/images/clear.jpg';
+        iconImg = 'assets/icons/Clear.png';
+      } else if (main == 'Clouds') {
+        bgImg = 'assets/images/clouds.jpg';
+        iconImg = 'assets/icons/Clouds.png';
+      } else if (main == 'Rain') {
+        bgImg = 'assets/images/rain.jpg';
+        iconImg = 'assets/icons/Rain.png';
+      } else if (main == 'Fog') {
+        bgImg = 'assets/images/fog.jpg';
+        iconImg = 'assets/icons/Haze.png';
+      } else if (main == 'Thunderstorm') {
+        bgImg = 'assets/images/thunderstorm.jpg';
+        iconImg = 'assets/icons/Thunderstorm.png';
+      } else {
+        bgImg = 'assets/images/haze.jpg';
+        iconImg = 'assets/icons/Haze.png';
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,6 +87,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     height: 40,
                   ),
                   TextField(
+                    controller: searchController,
+                    onChanged: (cityName){
+                      getData(cityName: cityName);
+                    },
                     decoration: InputDecoration(
                       hintText: "Entre city Name",
                       suffixIcon: Icon(
@@ -53,7 +113,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
             children: [
               Icon(Icons.location_on),
               Text(
-                "Pune",
+                cityName,
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w500,
@@ -61,7 +121,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
               ),
               SizedBox(height: 50),
               Text(
-                "30.9°c",
+                "$temperature°c",
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 90,
@@ -71,14 +131,14 @@ class _WeatherScreenState extends State<WeatherScreen> {
               Row(
                 children: [
                   Text(
-                    'Haze',
+                    main,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   Image.asset(
-                    'assets/icons/haze.png',
+                    iconImg,
                     height: 180,
                   )
                 ],
@@ -92,7 +152,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     Icons.arrow_upward,
                   ),
                   Text(
-                    '35°c',
+                    '$tempMax°c',
                     style: TextStyle(
                       fontSize: 22,
                       fontStyle: FontStyle.italic,
@@ -102,7 +162,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     Icons.arrow_downward,
                   ),
                   Text(
-                    '25°c',
+                    '$tempMin°c',
                     style: TextStyle(
                       fontSize: 22,
                       fontStyle: FontStyle.italic,
@@ -125,20 +185,20 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         WeatherDataTile(
                           index1: 'Sunrise',
                           index2: 'Sunset',
-                          value1: '6:15 AM',
-                          value2: '6:30 PM',
+                          value1: sunrise,
+                          value2: sunset,
                         ),
                         WeatherDataTile(
                           index1: 'Humidity',
-                          index2: 'Visiblity',
-                          value1: '4',
-                          value2: '1000',
+                          index2: 'Visibility',
+                          value1: humidity,
+                          value2: visibility,
                         ),
                         WeatherDataTile(
                           index1: 'Precipitation',
                           index2: 'Wind speed',
-                          value1: '6',
-                          value2: '45',
+                          value1: pressure,
+                          value2: windSpeed,
                         ),
                       ],
                     ),
