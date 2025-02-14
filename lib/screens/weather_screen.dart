@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import '../services/weather_services.dart';
 import '../widgets/weather_data_tile.dart';
@@ -26,8 +27,14 @@ class _WeatherScreenState extends State<WeatherScreen> {
   String visibility = '';
   String windSpeed = '';
   getData({required String cityName}) async {
+    dynamic weatherData;
     final weatherService = WeatherService();
-    final weatherData = await weatherService.fetchWeather(cityName: cityName);
+    if (cityName == "") {
+      weatherData = weatherService.fetchWeather(cityName: cityName);
+    } else {
+      weatherData = await weatherService.getWeather(cityName: cityName);
+    }
+    weatherData = await weatherService.fetchWeather(cityName: cityName);
     debugPrint(weatherData.toString());
     setState(() {
       cityName = weatherData['name'];
@@ -66,13 +73,27 @@ class _WeatherScreenState extends State<WeatherScreen> {
     });
   }
 
+  Future<bool> checkLocationPermission() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return false;
+      }
+      getData( cityName: '');
+    }
+    getData(cityName: '');
+    return true;
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
           Image.asset(
-            "assets/images/haze.jpg",
+            bgImg,
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
@@ -88,7 +109,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   ),
                   TextField(
                     controller: searchController,
-                    onChanged: (cityName){
+                    onChanged: (cityName) {
                       getData(cityName: cityName);
                     },
                     decoration: InputDecoration(
